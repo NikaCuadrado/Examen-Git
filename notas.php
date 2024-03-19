@@ -1,17 +1,22 @@
 <?php
- //Redirecciona a index.php
- header("Location: index.php");
- 
-if($_SERVER["REQUEST_METHOD"]=="POST"){
-    $nota=$_POST['nota'];
-    $archivo='notas.txt';
-    //Abre el archivo en modo append (añadir)
+// Si la solicitud es POST, significa que se está guardando una nueva nota
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nota = $_POST['nota'];
+    $archivo = 'notas.txt';
     $file = fopen($archivo, 'a');
-    fwrite($file, $nota . PHP_EOL);
-    //cierra el archivo
+    if (fwrite($file, $nota . PHP_EOL)) {
+        echo "Nota guardada exitosamente.";
+    } else {
+        echo "Error al guardar la nota.";
+    }
     fclose($file);
-   
-}else{
-    echo "La nota no se ha guardado";
+} else { // Si no es POST, significa que se está cargando las notas existentes
+    $archivo = 'notas.txt';
+    if (file_exists($archivo)) {
+        $contenido = file_get_contents($archivo);
+        echo "<pre>$contenido</pre>";
+    } else {
+        echo "No hay notas guardadas.";
+    }
 }
 ?>
